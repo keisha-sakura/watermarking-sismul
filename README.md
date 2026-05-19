@@ -62,7 +62,7 @@ pip install opencv-python numpy matplotlib pillow
 Clone repository:
 
 ```bash
-git clone < >
+git clone https://github.com/keisha-sakura/watermarking-sismul.git
 cd watermark_project
 ```
 
