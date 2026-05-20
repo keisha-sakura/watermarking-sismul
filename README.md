@@ -122,7 +122,7 @@ _, wm_binary = cv2.threshold(wm, 127, 1, cv2.THRESH_BINARY)
 
 ---
 
-# Watermark Embedding
+## 2. Watermark Embedding
 
 ![Proses Grayscale](results/steps/embedding.png)
 
@@ -138,7 +138,7 @@ Setiap bit watermark disimpan ke blok 2x2 pixel sekaligus. Redundansi ini dilaku
 
 ---
 
-# JPEG Compression Simulation
+## 3. JPEG Compression Simulation
 
 Kompresi dilakukan menggunakan pendekatan blok 8x8. Di setiap bloknya, akan dihitung nilai rata-rata lokal. Lalu, nilai dari tiap pixelnya akan dikurangi oleh nilai rata-rata dan dibagi menggunakan bobot yang diturunkan dari QF. Semakin kecil nilai QFnya, nilai variabel pembagi di dalam rumus kompresi manualnya  akan menjadi semakin besar. 
 
@@ -158,7 +158,7 @@ Semakin kecil nilai QF:
 
 ---
 
-# Watermark Extraction
+## 4. Watermark Extraction
 
 Ekstraksi dilakukan menggunakan **sistem majority voting** pada blok 2x2. Jika mayoritas bit dalam blok bernilai 1, maka hasil ekstraksi dianggap 1.
 
@@ -167,7 +167,7 @@ Ekstraksi dilakukan menggunakan **sistem majority voting** pada blok 2x2. Jika m
 ![Proses Grayscale](results/steps/extracted_comparison.png)
 ---
 
-# Evaluation Metrics
+## 5. Evaluation Metrics
 
 ## PSNR (Peak Signal-to-Noise Ratio)
 
