@@ -87,14 +87,19 @@ Masukkan file berikut ke folder `images/`:
 
 ## 1. Preprocessing
 
+![Proses Grayscale](results/steps/preprocessing.png)
+
 ### Grayscale Conversion
 
-Gambar diubah menjadi grayscale agar manipulasi bit lebih sederhana dan lebih tahan terhadap kompresi JPEG.
+Gambar diubah menjadi grayscale agar manipulasi bit lebih sederhana dan lebih tahan terhadap kompresi JPEG. Bisa lebih tahan terhadap kompresi karena bisa menghindari kerusakan besar saat tahap chroma subsampling. Selain itu, channel grayscale juga hanya satu sehingga prosesnya lebih sederhana. 
+
+Untuk mengubah ke grayscale akan dibagi terlebih dahulu ke tiga channel karena satu channelnya bisa menyimpan informasi yang berbeda-beda. Lalu, untuk menghasilkan gambar grayscale yang natural untuk mata manusia, komputer akan melakukan hitungan sistematis: GRAY = 0.299 x R + 0.587 x G + 0.114 x B
 
 ```python
 img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 ```
-![Proses Grayscale](steps/detail_grayscale.png)
+![Proses Grayscale](results/steps/detail_grayscale.png)
+
 ---
 
 ### Resize Watermark
@@ -119,19 +124,23 @@ _, wm_binary = cv2.threshold(wm, 127, 1, cv2.THRESH_BINARY)
 
 # Watermark Embedding
 
-Watermark disisipkan menggunakan metode **LSB bit-position 3**.
+![Proses Grayscale](results/steps/embedding.png)
+
+Pada metode LSB biasa, penyisipan selalu dilakukan pada bit posisi ke-0 sehingga perubahan sekecil apapun bisa merusak langsung gambarnya. Oleh karena itu, untuk membuatnya lebih tahan rusak, bit disisipkan di **posisi ke-3**. Posisi tersebut dipilih karena cukup rendah untuk tidak menghasilkan perubahan besar pada gambar (noise), tetapi juga cukup tinggi untuk mempertahankan nilainya dari proses kompresi.
 
 ```python
 BIT_POSITION = 3
 ```
 
-Setiap bit watermark disimpan ke blok 2x2 pixel sekaligus agar lebih tahan terhadap kerusakan akibat kompresi.
+Setiap bit watermark disimpan ke blok 2x2 pixel sekaligus. Redundansi ini dilakukan dengan tujuan jaga-jaga jika ada 1 bit pixel yang rusak, maka masih ada 3 pixel lainnya yang menjaga informasi. 
+
+![Proses Grayscale](results/steps/detail_embedding_pixel.png)
 
 ---
 
 # JPEG Compression Simulation
 
-Kompresi dilakukan menggunakan pendekatan blok 8x8.
+Kompresi dilakukan menggunakan pendekatan blok 8x8. Di setiap bloknya, akan dihitung nilai rata-rata lokal. Lalu, nilai dari tiap pixelnya akan dikurangi oleh nilai rata-rata dan dibagi menggunakan bobot yang diturunkan dari QF. Semakin kecil nilai QFnya, nilai variabel pembagi di dalam rumus kompresi manualnya  akan menjadi semakin besar. 
 
 Quality Factor yang diuji:
 
@@ -145,14 +154,17 @@ Semakin kecil nilai QF:
 - ukuran file mengecil,
 - watermark semakin sulit dipertahankan.
 
+![Proses Grayscale](results/steps/compression_midprocess.png)
+
 ---
 
 # Watermark Extraction
 
-Ekstraksi dilakukan menggunakan sistem majority voting pada blok 2x2.
+Ekstraksi dilakukan menggunakan **sistem majority voting** pada blok 2x2. Jika mayoritas bit dalam blok bernilai 1, maka hasil ekstraksi dianggap 1.
 
-Jika mayoritas bit dalam blok bernilai 1, maka hasil ekstraksi dianggap 1.
+![Proses Grayscale](results/steps/detail_extraction_pixel.png)
 
+![Proses Grayscale](results/steps/extracted_comparison.png)
 ---
 
 # Evaluation Metrics
@@ -174,6 +186,8 @@ Digunakan untuk mengukur tingkat kesalahan bit watermark.
 - BER mendekati 0.5 → watermark rusak/random
 
 ---
+
+![Proses Grayscale](results/steps/metrics_table.png)
 
 # Running the Experiment
 
