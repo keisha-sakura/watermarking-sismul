@@ -34,7 +34,7 @@ watermark_project/
 │   └── logo.png
 │
 ├── results/
-│   ├── watermarked/
+│   ├── steps/
 │   ├── compressed/
 │   └── extracted/
 │
@@ -94,7 +94,7 @@ Gambar diubah menjadi grayscale agar manipulasi bit lebih sederhana dan lebih ta
 ```python
 img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 ```
-
+![Proses Grayscale](steps/detail_grayscale.png)
 ---
 
 ### Resize Watermark
